@@ -1,88 +1,143 @@
+const BASE_URL = "http://microbloglite.us-east-2.elasticbeanstalk.com";
 
+const NO_AUTH_HEADERS = { 'accept': 'application/json', 'Content-Type': 'application/json' };
+// ONLY 2 - INSECURE TOKEN FREE ACTIONS
 
-var w = window.innerWidth,
-    h = window.innerHeight,
-    canvas = document.getElementById('test'),
-    ctx = canvas.getContext('2d'),
-    rate = 60,
-    arc = 100,
-    time,
-    count,
-    size = 7,
-    speed = 20,
-    parts = new Array,
-    colors = ['red','#f57900','yellow','#ce5c00','#5c3566'];
-var mouse = { x: 0, y: 0 };
+//create user - sign up
+/*
+curl -X 'POST' \
+  'http://microbloglite.us-east-2.elasticbeanstalk.com/api/users' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "username": "string",
+  "fullName": "string",
+  "password": "string"
+}'
+*/
+async function signUp(username, fullName, password) {
+    const payload = JSON.stringify(
+        { "username": username, "fullName": fullName, "password": password }
+    );
 
-canvas.setAttribute('width',w);
-canvas.setAttribute('height',h);
+    const response = await fetch(BASE_URL + "/api/users", {
+        method: "POST",
+        headers: NO_AUTH_HEADERS,
+        body: payload
+    }); //end fetch
 
-function create() {
-  time = 0;
-  count = 0;
-
-  for(var i = 0; i < arc; i++) {
-    parts[i] = {
-      x: Math.ceil(Math.random() * w),
-      y: Math.ceil(Math.random() * h),
-      toX: Math.random() * 5 - 1,
-      toY: Math.random() * 2 - 1,
-      c: colors[Math.floor(Math.random()*colors.length)],
-      size: Math.random() * size
+    //TODO check for error response status codes
+    if (response.status != 201) {
+        console.log(response.status, response.statusText);
+        return response.statusText;
     }
-  }
+    const object = await response.json(); //COnvert body to object
+    return object;
 }
 
-function particles() {
-  ctx.clearRect(0,0,w,h);
-   canvas.addEventListener('mousemove', MouseMove, false);
-  for(var i = 0; i < arc; i++) {
-    var li = parts[i];
-    var distanceFactor = DistanceBetween( mouse, parts[i] );
-    var distanceFactor = Math.max( Math.min( 15 - ( distanceFactor / 10 ), 10 ), 1 );
-    ctx.beginPath();
-    ctx.arc(li.x,li.y,li.size*distanceFactor,0,Math.PI*2,false);
-    ctx.fillStyle = li.c;
-    ctx.strokeStyle=li.c;
-    if(i%2==0)
-      ctx.stroke();
-    else
-      ctx.fill();
-    
-    li.x = li.x + li.toX * (time * 0.05);
-    li.y = li.y + li.toY * (time * 0.05);
-    
-    if(li.x > w){
-       li.x = 0; 
-    }
-    if(li.y > h) {
-       li.y = 0; 
-    }
-    if(li.x < 0) {
-       li.x = w; 
-    }
-    if(li.y < 0) {
-       li.y = h; 
-    }
-   
-     
-  }
-  if(time < speed) {
-    time++;
-  }
-  setTimeout(particles,1000/rate);
-}
-function MouseMove(e) {
-   mouse.x = e.layerX;
-   mouse.y = e.layerY;
 
-   //context.fillRect(e.layerX, e.layerY, 5, 5);
-   //Draw( e.layerX, e.layerY );
+//login and store username and token received
+/*
+curl -X 'POST' \
+  'http://microbloglite.us-east-2.elasticbeanstalk.com/auth/login' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "username": "string",
+  "password": "string"
+}'
+*/
+async function login(username, password) {
+    const payload = JSON.stringify({ "username": username, "password": password });
+    const response = await fetch(BASE_URL + "/auth/login", {
+        method: "POST",
+        headers: NO_AUTH_HEADERS,
+        body: payload
+    }); //end fetch
+
+    //TODO check for error response status codes
+    if (response.status != 200) {
+        console.log(response.status, response.statusText);
+        return response.statusText;
+    }
+    const object = await response.json(); //COnvert body to object
+    localStorage.token = object.token;
+    localStorage.username = object.username;
+    return object;
 }
-function DistanceBetween(p1,p2) {
-   var dx = p2.x-p1.x;
-   var dy = p2.y-p1.y;
-   return Math.sqrt(dx*dx + dy*dy);
+
+// ALL THE OTHERS NEED A TOKEN IN THE HEADER
+function headersWithAuth() {
+    //SAME AS NO AUTH BUT WITH AUTH ADDED
+    return { 
+        ...NO_AUTH_HEADERS, 
+        'Authorization': `Bearer ${localStorage.token}`,
+    }
 }
-create();
-particles();
+// get secure list of message using token
+async function getMessageList() {
+    const LIMIT_PER_PAGE = 1000;
+    const OFFSET_PAGE = 0;
+    const queryString = `?limit=${LIMIT_PER_PAGE}&offset=${OFFSET_PAGE}`;
+
+    const response = await fetch(
+        BASE_URL + "/api/posts" + queryString, {
+        method: "GET",
+        headers: headersWithAuth(),
+    });
+    const object = await response.json();
+    return object;
+}
+
+async function sendText(text){
+    const response = await fetch(
+        BASE_URL + "/api/posts", { // endpoint for messages/posts
+        method: "POST", //CREATE
+        headers: headersWithAuth(),
+        body: `{"text":"${text}"}` //make json string by hand instead of stringify
+    });
+    const object = await response.json();
+    return object;
+}
+
+async function sendLike(postId){
+    const response = await fetch(
+        BASE_URL + "/api/likes", { // endpoint for likes
+        method: "POST", //CREATE
+        headers: headersWithAuth(),
+        body: `{"postId":"${postId}"}` //make json string by hand instead of stringify
+    });
+    const object = await response.json();
+    return object;
+}
+async function deleteLike(likeId){
+    const response = await fetch(
+        BASE_URL + "/api/likes/" + likeId, { // endpoint for likes
+        method: "DELETE", //REMOVE
+        headers: headersWithAuth(),
+    });
+    const object = await response.json();
+    return object;
+}
+
+async function getProfile() {
+    const response = await fetch(
+        BASE_URL + "/api/users/" + localStorage.username, {
+        method: "GET",
+        headers: headersWithAuth(),
+    });
+    const object = await response.json();
+    return object;
+}
+
+
+async function saveProfile(payload){
+    const response = await fetch(
+        BASE_URL + "/api/users/" + localStorage.username, { // endpoint for messages/posts
+        method: "PUT", //UPDATE
+        headers: headersWithAuth(),
+        body: JSON.stringify(payload)
+    });
+    const object = await response.json();
+    return object;
+}
