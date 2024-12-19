@@ -1,0 +1,9 @@
+
+
+main{
+   margin:auto;
+   width:fit-content;
+}
+label, input, button, spans{
+   display: block;
+}

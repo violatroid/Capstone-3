@@ -1,10 +1,15 @@
 document.addEventListener("DOMContentLoaded", ()=>{
-    signUpButton.addEventlIstener("click",async ()=>{
+    signUpButton.addEventListener("click",async ()=>{
         const result = await signUp(
             username.value,
             fullName.value,
-            password.value,
+            password.value
         );
-        if("Conflict")
-    })
-})
+        if("Conflict" === result){
+            output.innerText = "Username already taken.";
+            return;
+        }
+        //SUCCESS
+        window.location.href = "login.html";
+    });//end click
+}); //end loaded

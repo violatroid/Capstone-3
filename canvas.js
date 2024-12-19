@@ -9,7 +9,7 @@ var w = window.innerWidth,
     size = 7,
     speed = 20,
     parts = new Array,
-    colors = ['red','#f57900','yellow','#ce5c00','#5c3566'];
+    colors = ['turquoise','pink','white','lavendar','#5c3566'];
 var mouse = { x: 0, y: 0 };
 
 canvas.setAttribute('width',w);

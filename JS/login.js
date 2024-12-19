@@ -1,4 +1,4 @@
-ddocument.addEventListener("DOMContentLoaded", ()=>{
+document.addEventListener("DOMContentLoaded", ()=>{
     loginButton.addEventListener("click",async ()=>{
         const result = await login(
             username.value,
