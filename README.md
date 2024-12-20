@@ -12,18 +12,20 @@ This blog is designed and inspired off today's society. Social media today cen b
 
                                                     ****** Sign Up Page ******
 <>
-<<img src="./images/Signup.png.png" alt="Post">
-<img src="./images/Signup2.png.png" alt="Post">
+<<img src="./images/Signup.png" alt="Post">
+<img src="./images/Signup2.png" alt="Post">
 
                                                     ****** Login Page ******
-<img src="./images/Login.png.png" alt="Post">
+<img src="./images/Login.png" alt="Post">
 
                                         *           ***** Messages Page ******
+<img src="./images/Messages.png" alt="Post">
 
                                                 ****** New Messages Page ******
+<img src="./images/NewMessage.png" alt="Post">
 
                                                     ****** Edit Profile Page ******
+<img src="./images/EditProfile.png" alt="Post">
 
-                                                        ****** Log Out ******
 
 
