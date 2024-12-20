@@ -13,6 +13,10 @@ canvas {
     left:0;
     z-index: -1;
  }
+ #output{
+    text-align: center;
+    width: fit-content;
+ }
  main{
     color:aqua;
     background-color: rgba(255, 255, 255, 0.3);
@@ -20,6 +24,10 @@ canvas {
     border-radius: 1rem;
     margin:1rem auto;
     width:fit-content;
+    max-width: 40rem;
+ }
+ main > label input {
+    width: 100%;
  }
  main > button{ 
     margin-top: 1rem;
@@ -35,4 +43,11 @@ body > a {
     text-decoration: none;
     background: white;
     color:black;
+}
+.message button{
+    display: inline-block;
+}
+.message {
+    width: 25rem;
+    max-width: 40rem;
 }
