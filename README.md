@@ -1,19 +1,19 @@
-                            ****** Welcome to The Final Capstone Project ******
+                                ****** Welcome to The Final Capstone Project ******
 
-                ****** This Project is about a blogging website with other users ******
+                        ****** This Project is about a blogging website with other users ******
 
-                                        ****** Homepage ******
+                                                    ****** Homepage ******
 
-                                        ****** Sign Up Page ******
+                                                    ****** Sign Up Page ******
 
-                                        ****** Login Page ******
+                                                    ****** Login Page ******
 
-                                        ****** Messages Page ******
+                                        *           ***** Messages Page ******
 
-                                        ****** New Messages Page ******
+                                                    ****** New Messages Page ******
 
-                                        ****** Edit Profile Page ******
+                                                    ****** Edit Profile Page ******
 
-                                        ****** Log Out ******
+                                                    ****** Log Out ******
 
 
